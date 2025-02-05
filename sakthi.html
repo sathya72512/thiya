@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Guessing Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 50px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #colorDisplay {
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            display: inline-block;
+            margin: 10px;
+            border: 2px solid #fff;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .square:hover {
+            transform: scale(1.1);
+        }
+
+        #message {
+            font-size: 18px;
+            color: #555;
+            margin-top: 20px;
+        }
+
+        #reset {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #reset:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Color Guessing Game</h1>
+    <p>Guess which square matches the color: <span id="colorDisplay"></span></p>
+
+    <div id="squares"></div>
+
+    <p id="message"></p>
+    <button id="reset">New Colors</button>
+
+    <script>
+        const squaresContainer = document.getElementById('squares');
+        const colorDisplay = document.getElementById('colorDisplay');
+        const messageDisplay = document.getElementById('message');
+        const resetButton = document.getElementById('reset');
+
+        let colors = [];
+        let pickedColor;
+
+        function generateRandomColor() {
+            const r = Math.floor(Math.random() * 256);
+            const g = Math.floor(Math.random() * 256);
+            const b = Math.floor(Math.random() * 256);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function generateColors(num) {
+            const arr = [];
+            for (let i = 0; i < num; i++) {
+                arr.push(generateRandomColor());
+            }
+            return arr;
+        }
+
+        function pickColor() {
+            const random = Math.floor(Math.random() * colors.length);
+            return colors[random];
+        }
+
+        function setupSquares() {
+            squaresContainer.innerHTML = '';
+            colors.forEach(color => {
+                const square = document.createElement('div');
+                square.classList.add('square');
+                square.style.backgroundColor = color;
+                square.addEventListener('click', function () {
+                    if (color === pickedColor) {
+                        messageDisplay.textContent = 'Correct! 🎉';
+                        changeColors(pickedColor);
+                    } else {
+                        square.style.backgroundColor = '#f0f0f0';
+                        messageDisplay.textContent = 'Try Again! ❌';
+                    }
+                });
+                squaresContainer.appendChild(square);
+            });
+        }
+
+        function changeColors(color) {
+            const squares = document.querySelectorAll('.square');
+            squares.forEach(square => {
+                square.style.backgroundColor = color;
+            });
+        }
+
+        function resetGame() {
+            colors = generateColors(6);
+            pickedColor = pickColor();
+            colorDisplay.textContent = pickedColor;
+            messageDisplay.textContent = '';
+            setupSquares();
+        }
+
+        resetButton.addEventListener('click', resetGame);
+
+        // Initialize game
+        resetGame();
+    </script>
+</body>
+</html>
